@@ -5,6 +5,7 @@ import { Settings, Trash2, Download } from 'lucide-react';
 import ChatInput from '@/components/ChatInput';
 import ChatOutput from '@/components/ChatOutput';
 import AgentConfig from '@/components/AgentConfig';
+import N8nChatAssistant from '@/components/N8nChatAssistant';
 import LangflowAPI from '@/lib/langflow-api';
 import { Message, AgentConfig as AgentConfigType, ChatInputProps } from '@/types/langflow';
 
@@ -14,6 +15,7 @@ export default function Home() {
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [contextId] = useState('default');
+  const [showN8nChat, setShowN8nChat] = useState(true);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const langflowAPI = useRef(new LangflowAPI());
@@ -188,6 +190,19 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-2">
           <button
+            onClick={() => setShowN8nChat(!showN8nChat)}
+            className={`p-2 rounded-lg transition-colors ${
+              showN8nChat
+                ? 'text-blue-600 bg-blue-100'
+                : 'text-gray-600 hover:text-blue-600 hover:bg-gray-100'
+            }`}
+            title="AI Assistant"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+            </svg>
+          </button>
+          <button
             onClick={exportChat}
             className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
             title="Export Chat"
@@ -265,6 +280,13 @@ export default function Home() {
         onConfigChange={handleConfigChange}
         isOpen={isConfigOpen}
         onClose={() => setIsConfigOpen(false)}
+      />
+
+      {/* N8n Chat Assistant */}
+      <N8nChatAssistant
+        webhookUrl="https://luci1111.app.n8n.cloud/webhook/7711bfb2-b409-4207-995c-6275599b46df/chat"
+        isOpen={showN8nChat}
+        onClose={() => setShowN8nChat(false)}
       />
     </div>
   );

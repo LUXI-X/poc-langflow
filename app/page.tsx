@@ -126,6 +126,24 @@ export default function Home() {
     langflowAPI.current.setApiKey(newConfig.api_key);
   };
 
+  const autoSelectOllamaModel = async () => {
+    try {
+      const models = await langflowAPI.current.getOllamaModels(agentConfig.ollama_base_url);
+      if (models.length > 0) {
+        const updatedConfig = {
+          ...agentConfig,
+          ollama_model: models[0]
+        };
+        setAgentConfig(updatedConfig);
+      } else {
+        alert('No Ollama models found. Please install a model first.');
+      }
+    } catch (error) {
+      console.error('Failed to auto-select model:', error);
+      alert('Failed to connect to Ollama. Make sure it is running.');
+    }
+  };
+
   const clearChat = async () => {
     try {
       await langflowAPI.current.clearChatHistory(sessionId);
@@ -205,9 +223,15 @@ export default function Home() {
               </p>
             )}
             {agentConfig.agent_llm === 'Ollama' && !agentConfig.ollama_model && (
-              <p className="text-sm text-orange-600 mt-2">
-                ⚠️ Please select an Ollama model in settings to enable AI responses.
-              </p>
+              <div className="text-sm text-orange-600 mt-4 p-3 bg-orange-50 rounded-lg inline-block">
+                <p className="mb-2">⚠️ Please select an Ollama model to enable AI responses.</p>
+                <button
+                  onClick={autoSelectOllamaModel}
+                  className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 text-sm font-medium"
+                >
+                  Auto-Select Model
+                </button>
+              </div>
             )}
           </div>
         ) : (

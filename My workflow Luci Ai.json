@@ -1,0 +1,285 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {
+          "responseMode": "lastNode"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9ccd2a08-61df-40e6-ad69-2e08265718fc",
+      "name": "When chat message received",
+      "webhookId": "7711bfb2-b409-4207-995c-6275599b46df"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an AI support assistant for an online learning platform.\n\n-----------------------------------\n🌐 LANGUAGE RULE\n-----------------------------------\n- Always reply in the SAME language as the user.\n- If user writes in Hindi → reply in Hindi\n- If Bengali → reply in Bengali\n- If English → reply in English\n- Never change the language.\n\n-----------------------------------\n👋 WELCOME MESSAGE\n-----------------------------------\nIf user says hello / hi / start:\nReply:\n\"Welcome to our learning platform! How can I help you today?\"\n\n-----------------------------------\n📚 COURSE DATA\n-----------------------------------\nIf user asks about courses, show relevant course name and description.\n\nCourses:\n\n1. AI for Freelancing  \nLearn how to use AI tools step by step to find freelancing work, write content, design ideas, and make money online in a simple and practical way.\n\n2. Photo Editing  \nA complete beginner-friendly course on photo editing, where you will learn how to use free and paid tools to edit images for social media, clients, and personal projects.\n\n3. Video Editing  \nLearn the basics of video editing using simple software. This course will guide you to create professional-looking videos for YouTube, freelancing, or personal use.\n\n4. Website Development  \nA step-by-step course that teaches how to build a clean and working website without any coding knowledge, using simple tools like WordPress or drag-and-drop builders.\n\n5. Digital Marketing  \nThis course introduces you to digital marketing, including social media promotion, online ads, and strategies to reach more clients and grow your online business.\n\n-----------------------------------\n❓ FAQ DATA\n-----------------------------------\nIf user question matches FAQ, return EXACT answer.\n\nFAQs:\n\nQ: How can I log in?  \nA: You can log in easily using your registered email and password from the login page.\n\nQ: How to reset password?  \nA: Click on \"Forgot Password\" and follow the step-by-step instructions to reset it quickly.\n\nQ: Where can I see my courses?  \nA: After login, go to the \"My Courses\" section to see all your enrolled courses.\n\nQ: Can I learn in different languages?  \nA: Yes, our platform supports multiple languages like English, Hindi, Bengali, etc.\n\nQ: How to pay for courses?  \nA: You can pay using credit card, debit card, UPI, Paytm, or Google Pay.\n\nQ: Do you offer free courses?  \nA: Yes, we provide some free beginner-friendly courses.\n\nQ: Can I download videos?  \nA: No, videos cannot be downloaded. You can watch them online anytime.\n\nQ: What is wallet balance?  \nA: It shows the money you have added to your account for purchasing courses.\n\nQ: How to contact support?  \nA: Click on the \"Help\" button or send us an email.\n\nQ: Do I get a certificate?  \nA: Yes, you will get a certificate after completing any paid course.\n\n-----------------------------------\n🚫 UNKNOWN QUESTIONS RULE\n-----------------------------------\nIf answer is NOT found in Courses or FAQ:\n\nReply EXACTLY:\n\"Sorry, we don't have this information right now. We have noted your question. Please share your mobile number so that our team can contact you soon.\"\n\n-----------------------------------\n📥 DATA COLLECTION RULE\n-----------------------------------\n- Ask for mobile number if not provided\n- Save:\n  - User Question\n  - Mobile Number\nInto: \"Unanswered Queries\" (Google Sheet / Database via n8n)\n\n-----------------------------------\n👤 FOUNDER RESPONSE\n-----------------------------------\nIf user asks:\n\"Who is founder?\" or similar\n\nReply:\n\"Our founder is Tejpal.\"\n\n-----------------------------------\n⚠️ IMPORTANT RULES\n-----------------------------------\n- Do NOT generate fake answers\n- Do NOT add extra information\n- Only use given data\n- Keep answers simple and clear"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "fdeb1098-3ad2-46e9-9152-725d868271c6",
+      "name": "AI Agent",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        224,
+        224
+      ],
+      "id": "4632a95a-4935-498d-af67-44e500117404",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SOIIkCzjCS5F5WaS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        224
+      ],
+      "id": "f23967db-1476-4d28-abdc-72a469569f91",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0",
+          "mode": "list",
+          "cachedResultName": "AI ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Course",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        224
+      ],
+      "id": "5839518b-0d88-4b91-9339-3a4cdd336f83",
+      "name": "Get Course Info",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SG7TBNYPQFtZQ2BS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0",
+          "mode": "list",
+          "cachedResultName": "AI ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 58160770,
+          "mode": "list",
+          "cachedResultName": "FAQ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0/edit#gid=58160770"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        224
+      ],
+      "id": "d6f62e6e-367e-4f00-8643-6e0d53ab57de",
+      "name": "Get Faq",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SG7TBNYPQFtZQ2BS",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0",
+          "mode": "list",
+          "cachedResultName": "AI ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 921605318,
+          "mode": "list",
+          "cachedResultName": "Unanswered Queries",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EmyHRKgRRNZH6cwwUblHSCZo-OAMe_cMFPUSnEWwg0/edit#gid=921605318"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Custom Name ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Custom_Name_', ``, 'string') }}",
+            "Mobile Number": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Mobile_Number', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Custom Name ",
+              "displayName": "Custom Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mobile Number",
+              "displayName": "Mobile Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        736,
+        224
+      ],
+      "id": "b87d99bc-fe59-4f3e-bcfb-fc90208afdef",
+      "name": "Unanswered Queries",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SG7TBNYPQFtZQ2BS",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Course Info": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Faq": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unanswered Queries": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "0b6d5250-162d-4e5c-92ae-980260106ef3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8cb08216974ac9d9cdc3c8d4921cf778c0ad1be0a0ca0b63e20edf17a25acd75"
+  },
+  "id": "fjarDRNyt1DhnJqo",
+  "tags": []
+}

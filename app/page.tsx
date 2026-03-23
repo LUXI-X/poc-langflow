@@ -27,7 +27,7 @@ export default function Home() {
     add_current_date_tool: true,
     output_schema: [],
     ollama_model: '',
-    ollama_base_url: 'http://localhost:11434',
+    ollama_base_url: process.env.NEXT_PUBLIC_OLLAMA_BASE_URL || 'http://localhost:11434',
     temperature: 0.7
   });
 

@@ -6,13 +6,22 @@ import ChatInput from '@/components/ChatInput';
 import ChatOutput from '@/components/ChatOutput';
 import AgentConfig from '@/components/AgentConfig';
 import N8nChatAssistant from '@/components/N8nChatAssistant';
+import LangflowChatHistory from '@/components/LangflowChatHistory';
 import LangflowAPI from '@/lib/langflow-api';
 import { Message, AgentConfig as AgentConfigType, ChatInputProps } from '@/types/langflow';
+
+interface LangflowChatSession {
+  id: string;
+  title: string;
+  timestamp: number;
+  messages: Message[];
+}
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [contextId] = useState('default');
   const [showN8nChat, setShowN8nChat] = useState(true);
@@ -155,6 +164,14 @@ export default function Home() {
     }
   };
 
+  const handleLoadSession = (session: LangflowChatSession) => {
+    setMessages(session.messages);
+  };
+
+  const handleNewChat = () => {
+    setMessages([]);
+  };
+
   const exportChat = () => {
     const chatData = {
       sessionId,
@@ -189,6 +206,13 @@ export default function Home() {
           <p className="text-sm text-gray-500">Session: {sessionId.slice(-8)}</p>
         </div>
         <div className="flex items-center gap-2">
+          <LangflowChatHistory
+            onSelectSession={handleLoadSession}
+            onNewChat={handleNewChat}
+            currentMessages={messages}
+            isOpen={isHistoryOpen}
+            onToggle={() => setIsHistoryOpen(!isHistoryOpen)}
+          />
           <button
             onClick={() => setShowN8nChat(!showN8nChat)}
             className={`p-2 rounded-lg transition-colors ${
